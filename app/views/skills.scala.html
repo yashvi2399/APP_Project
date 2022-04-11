@@ -1,0 +1,39 @@
+@(keywords: Map[String, List[Display]])
+
+@main("SkillSearch") {
+
+
+	@if(keywords != null){
+	<div class="container">
+		@for( (word, results) <- keywords ){
+		<p align=center> - </p>
+
+			<div><h5>Search results for : @word </h5>
+				
+		<ul>
+			@for(dis <- results){
+			<li class="media bg-light border border-primary rounded p-3 mt-3 mb-3">
+				<table>	
+					<tr>
+  					<td> <a href="@routes.ApplicationController.userProfile(dis.getOwner_id)"> &nbsp  @dis.getOwner_id &nbsp  </td>
+  					<td>  &nbsp  @dis.getTime_submitted  &nbsp  </td>
+  					<td>  &nbsp  @dis.getTitle  &nbsp  </td>
+  					<td>  &nbsp  Type: @dis.getType  &nbsp  </td>
+  					
+  					<td>  Skills: 
+  					@for(job <- dis.getJobs){
+					<a href="http://localhost:9000/skills/@job.getName"> &nbsp @job.getName  &nbsp 
+					}
+					</td>
+					
+  					<td> &nbsp | &nbsp  <a href="@routes.ResponsiveApplicationController.stats()">  Stats  </a> &nbsp  </td>
+  					<td> &nbsp | &nbsp  <a href="@routes.ResponsiveApplicationController.readability()">  Readability  </a> &nbsp  </td>
+					</tr>
+				
+				</table>	
+			</li>
+			} }
+		</ul>
+	</div>
+	}
+}

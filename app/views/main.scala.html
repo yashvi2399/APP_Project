@@ -1,0 +1,38 @@
+@(page: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+    
+		<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
+		
+    </head>
+   
+    <body>
+    
+    <div class="navbar navbar-expand-lg navbar-dark bg-info sticky-top">
+		<h2 style="color:white">Freelancelot</h2>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    		<ul class="navbar-nav mr-auto">
+    		<li>
+    		<p> &nbsp </p>
+    		</li>
+    		<li>
+    		<p> &nbsp </p>
+    		</li>
+    		<li>
+    		<p> &nbsp </p>
+    		</li>
+				<li class="nav-item @("active".when(page == "ResponsiveTweetSearch"))">
+					<a class="nav-link" href="@routes.ResponsiveApplicationController.index()">Search Projects</a>
+				</li>
+      		</ul>
+      	</div>
+	</div>
+
+        @content
+       
+    </body>
+
+</html>

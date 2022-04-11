@@ -1,0 +1,52 @@
+@(userProfileAndProjects: UserProfileAndProjects)
+<!-- Author Nikita Baranov -->
+
+@main("Profile") {
+	<div class="container mt-3">
+   		<div class="media bg-success-light  rounded">
+			<div class="media-body">
+ 				<table>
+		
+					<tr> Id: @userProfileAndProjects.getEmployer.getId </tr><br>
+  					<tr> Username: @userProfileAndProjects.getEmployer.getUsername</tr><br>
+  					<tr> Registration date: @userProfileAndProjects.getEmployer.getRegistration_date </tr><br>
+  					<tr> Limited account: @userProfileAndProjects.getEmployer.getLimited_account </tr><br>
+  					<tr> Display name: @userProfileAndProjects.getEmployer.getDisplay_name </tr><br>
+  					<tr> Country: @userProfileAndProjects.getEmployer.getLocation.getCountry.getName </tr><br>
+  					<tr> Role: @userProfileAndProjects.getEmployer.getRole </tr><br>
+  					<tr> Chosen Role: @userProfileAndProjects.getEmployer.getChosen_role </tr><br>
+  					<tr> Email verified: @userProfileAndProjects.getEmployer.getStatus.isEmail_verified </tr><br>
+  								
+		</table>
+ 				</div>
+			</div>
+		</div>
+
+   	<div class="container">
+   		<ul class="list-unstyled">
+		@for(dis <- userProfileAndProjects.getProjects){
+			<li class="media bg-light border border-primary rounded p-3 mt-3 mb-3">
+    			<div>
+				<table>	
+					<tr>
+  					<td> <a href="@routes.ApplicationController.userProfile(dis.getOwner_id)"> &nbsp  @dis.getOwner_id &nbsp  </td>
+  					<td>  &nbsp  @dis.getTime_submitted  &nbsp  </td>
+  					<td>  &nbsp  @dis.getTitle  &nbsp  </td>
+  					<td>  &nbsp  Type: @dis.getType  &nbsp  </td>
+  					
+  					<td>  &nbsp Skills: 
+  					@for(job <- dis.getJobs){
+					<a href="http://localhost:9000/skills/@job.getName"> &nbsp @job.getName &nbsp 
+					}
+					</td>
+					
+  					<td> &nbsp | &nbsp  <a href="@routes.ResponsiveApplicationController.stats()">  Stats  </a> &nbsp  </td>
+  					<td> &nbsp | &nbsp  <a href="@routes.ResponsiveApplicationController.readability()">  Readability  </a> &nbsp  </td>
+					</tr>
+				</table>
+				</div> 
+   			</li>
+		}
+		</ul>
+   	</div>
+}
