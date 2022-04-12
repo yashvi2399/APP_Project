@@ -109,7 +109,7 @@ public class UserProfileService {
      * @param userName Twitter User ID
      * @return promise of last ten tweets as a list
      */
-    private CompletionStage<List<Display>> getUserLastTenTweets(String id){
+    public CompletionStage<List<Display>> getUserLastTenTweets(String id){
 		
 		return 
 			CompletableFuture.supplyAsync(() -> 

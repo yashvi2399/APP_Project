@@ -152,7 +152,7 @@ public class ResponsiveApplicationController extends Controller {
     public CompletionStage<Result> stats(String keyword, String title) {
 
         return CompletableFuture.supplyAsync(() -> {
-            return ok(stats.render(keyword, title));
+            return ok(statsOld.render(keyword, title));
         }, ec.current());
     }
     /**

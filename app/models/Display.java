@@ -1,6 +1,8 @@
 package models;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 /**
  * @author Yashvi Pithadia
  *
@@ -12,7 +14,47 @@ public class Display {
 	String type;
 	Jobs[] jobs;
 	String preview_description;	
-	
+	ArrayList<Stats> stats = new ArrayList<Stats>();
+
+	public ArrayList<Stats> getStats() {
+		return stats;
+	}
+	public void setStats() {
+		
+		List<String> words = Arrays.asList(this.preview_description.split(" "));
+		
+		
+		Map<String,Long> collect = words.stream()
+			    .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ));
+		
+		LinkedHashMap<String, Long> countByWordSorted = collect.entrySet()
+	            .stream()
+	            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+	            .collect(Collectors.toMap(
+	                    Map.Entry::getKey,
+	                    Map.Entry::getValue,
+	                    (v1, v2) -> {
+	                        throw new IllegalStateException();
+	                    },
+	                    LinkedHashMap::new
+	    ));
+		Set<String> keys = countByWordSorted.keySet();
+		
+		for (String key : keys) {
+			
+			if(!key.equals("")) {
+			
+			Stats stat = new Stats();
+			
+			stat.setWord(key);
+            stat.setCount(countByWordSorted.get(key));
+            
+            this.stats.add(stat);
+            
+			}
+		}
+		
+	}
 	public String getPreview_description() {
 		return preview_description;
 	}

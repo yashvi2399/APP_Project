@@ -85,6 +85,8 @@
                     }
                     function composeTweets(tweetsForKeyPhrase) {
                         toAppend += "<h5> Search results for: " + keyPhrase + "</h5>";
+                        var link3 = "http://localhost:9000/globalstats/" +text ;
+  						toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link3 + "\"> Global Stats </a> &nbsp  </td>";
                         for (var el in tweetsForKeyPhrase) {
                             //console.log("getElementById(keyPhraseId) == found the element");
                             

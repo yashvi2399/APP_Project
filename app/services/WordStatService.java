@@ -24,7 +24,7 @@ import play.libs.ws.WSClient;
  */
 
 @Singleton
-public class TenTweetsForKeywordService {
+public class WordStatService {
 	
 	/**
 	 * Web services client
@@ -46,7 +46,7 @@ public class TenTweetsForKeywordService {
 	 * @param twitterAuth Twitter Authentication service that provide auth token
 	 */
 	@Inject
-	public TenTweetsForKeywordService(WSClient wsClient) {
+	public WordStatService(WSClient wsClient) {
 		this.wsClient = wsClient;
 	}
 	
@@ -57,18 +57,6 @@ public class TenTweetsForKeywordService {
 	 * @return map where key is a search phrase and value is the associated 
 	 * list of 10 most recent tweets that contain the phrase
 	 */
-
-	public CompletionStage<Map<String, List<Display>>> getTenTweetsForKeyword(List<String> searchStrings) {
-
-		System.out.println("TEN TWEETS");
-		return searchStrings
-				.stream()
-				.map(word -> queryTenTweets(word))
-				.reduce((a, b) -> a.thenCombine(b, (x, y) -> {
-					x.putAll(y);
-					return x;
-				})).get();
-	}
 	
 	/**
 	 * Sets base url of Twitter API
@@ -90,8 +78,9 @@ public class TenTweetsForKeywordService {
 	 * and value is the associated list of ten most recent tweets that contain the 
 	 * <code>searchString</code>
 	 */
-	public CompletionStage<Map<String, List<Display>>> queryTenTweets(String searchString) {
+	public CompletionStage<Map<String, List<Display>>> getStats(String searchString, String title) {
 
+		System.out.println("statsss");
 		return CompletableFuture
 				.supplyAsync(() -> wsClient.url(baseUrl.concat("active?query=").concat(searchString.trim().replaceAll(" ", "%20")).concat(suffix))
 						.addQueryParameter("limit","10"))
@@ -106,15 +95,4 @@ public class TenTweetsForKeywordService {
 					return m;
 				});
 	}
-	
-	public CompletionStage<List<Display>> queryAllTweets(String searchString) {
-
-		return CompletableFuture
-				.supplyAsync(() -> wsClient.url(baseUrl.concat("active?query=").concat(searchString.trim().replaceAll(" ", "%20")).concat(suffix)))
-				.thenCompose(r -> r.get())
-				.thenApply(r -> r.getBody(WSBodyReadables.instance.json()).get("result").get("projects"))
-				.thenApply(r -> StreamSupport.stream(r.spliterator(), false)
-						.map(x -> Json.fromJson(x, Display.class))
-						.collect(Collectors.toList()));
-		}
 }

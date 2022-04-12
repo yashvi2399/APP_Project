@@ -16,7 +16,6 @@ import play.data.FormFactory;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
-import services.TenTweetsForKeywordService;
 import services.*;
 import views.html.*;
 
@@ -41,7 +40,7 @@ public class ApplicationController extends Controller {
 	 */
 	private TenTweetsForKeywordService tenTweetsForKeywordService;
 	
-	
+	private WordStatService wordStatService;
 	/**
 	 * Form Factory for managing UI forms
 	 */
@@ -141,11 +140,31 @@ public class ApplicationController extends Controller {
 	 * @return promise of a result with a rendered view of user profile info
 	 */
 	public CompletionStage<Result> userProfile(String id) {
-
 		
 		return userProfileService
 				.userProfle(id)
 				.thenApplyAsync(r -> ok(userProfile.render(r)));
 	}
+	
+	 public CompletionStage<Result> stats(String keyword, String title) {
+		 
+		 return tenTweetsForKeywordService
+					.queryTenTweets(keyword)
+					.thenApplyAsync(r -> ok(stats.render(keyword, title, r)));
+	    }
+	 
+	 public CompletionStage<Result> statsUser(String id, String title) {
+		 
+		 return userProfileService
+					.getUserLastTenTweets(id)
+					.thenApplyAsync(r -> ok(statsUser.render(id, title, r)));
+	    }
+	 
+	 public CompletionStage<Result> statsGlobal(String keyword) {
+		 
+		 return tenTweetsForKeywordService
+					.queryAllTweets(keyword)
+					.thenApplyAsync(r -> ok(statsGlobal.render(keyword, r)));
+	    }
 	
 }

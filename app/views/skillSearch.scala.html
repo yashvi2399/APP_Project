@@ -85,7 +85,8 @@
                                             	var skillname = keyPhraseAndTweets[keyPhrase][el].jobs[skill].name;
                                             	toAppend += "<td> &nbsp <a href=\" http://localhost:9000/skills/" +skillname+ "\">" + skillname + " </a> &nbsp </td>";
                                             }
-  											toAppend += "<td>  &nbsp | &nbsp <a href=\" \">  Stats  &nbsp  </td>";
+  											var link = "http://localhost:9000/stats/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
+  											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
   											toAppend += "<td>  &nbsp | &nbsp <a href=\" @routes.ResponsiveApplicationController.readability() \">  Readability  &nbsp  </td>";
                                        
                                         toAppend += "</tr>"

@@ -1,8 +1,8 @@
-@(message: String , title: String, results: Map[String, List[Display]])
+@(message: String , results:List[Display])
 
 @main("Welcome to Freelancelot") {
 
-	<h1 align="center">Stats for @message : @title</h1>
+	<h1 align="center">Global Stats for: @message</h1>
 	
 		<table align=center	>
 					
@@ -11,12 +11,8 @@
 					<td> COUNT </td>
 					</tr>
 					
-					@for((word, result) <- results ){
-					
-						@for(res <- result){
+						@for(res <- results){
 							@res.setStats()
-							
-							@if(res.getTitle == title) {
 							
 								@for( stat <- res.getStats() ){
 								<tr>
@@ -24,11 +20,9 @@
 								<td>@stat.getCount()
 								</tr>
 								}	
-							}
 							
 						}
 					
-					} 
 				
 		</table>
 	
