@@ -1,0 +1,69 @@
+@(message: String , title: String, results: Map[String, List[Display]])
+
+@main("Welcome to Freelancelot") {
+
+	<h1 align="center">Readability for @message : @title</h1>
+	
+		<table align=center	>
+					
+					
+					@for((word, result) <- results ){
+					
+						@for(res <- result){
+							@res.setFlesch()
+							
+							@if(res.getTitle == title) {
+								<tr>
+								<td> Readability:  @res.getFlesch().getFlesch_count()
+								</tr>
+								<tr>
+								<td> FKGL:  @res.getFlesch().getFKGL()
+								</tr>
+								<tr>
+								@if(res.getFlesch.getFKGL > 100) {
+								<tr>
+      							<td>	Education Level: 4th Grader
+      							</tr>
+    							} else if(90 <  res.getFlesch.getFlesch_count  &&  res.getFlesch.getFlesch_count <= 100) {
+      							<tr>
+      							<td>	Education Level: 5th Grader
+      							</tr>
+    							} else if(80 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count<= 90) {
+      							<tr>
+      							<td>	Education Level: 6th Grader
+      							</tr>
+    							} else if(70 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 80) {
+      							<tr>
+      							<td>	Education Level: 7th Grader
+      							</tr>
+    							} else if(60 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 70) {
+      							<tr>
+      							<td>	Education Level: 8th Grader
+      							</tr>
+    							} else if(50 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 60) {
+      							<tr>
+      							<td>	Education Level: 9th Grader
+      							</tr>
+    							} else if(30 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 50) {
+      							<tr>
+      							<td>	Education Level: High School Graduate
+      							</tr>
+    							} else if(0 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 30) {
+      							<tr>
+      							<td>	Education Level: College Graduate
+      							</tr>
+    							} else if(res.getFlesch.getFlesch_count < 0) {
+      							<tr>
+      							<td>	Education Level: Law School Graduate
+      							</tr>
+    							}
+								</tr>
+								}	
+							
+						}
+					
+					} 
+				
+		</table>
+
+  }

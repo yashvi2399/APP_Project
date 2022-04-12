@@ -13,7 +13,7 @@ GET         /responsive                              controllers.ResponsiveAppli
 GET         /responsive/websocket                    controllers.ResponsiveApplicationController.websocket
 GET 		/stats/:keyword/:current				 controllers.ApplicationController.stats(keyword: String, current: String)
 GET 		/globalstats/:keyword				     controllers.ApplicationController.statsGlobal(keyword: String)
-GET			/readability							 controllers.ResponsiveApplicationController.readability
+GET 		/flesch/:keyword/:current				 controllers.ApplicationController.flesch(keyword: String, current: String)
 GET 		/skills/:keyword					     controllers.ResponsiveApplicationController.skills(keyword: String)
 GET 		/profile/stats/:id/:current				 controllers.ApplicationController.statsUser(id: String, current: String)
 

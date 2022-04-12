@@ -15,7 +15,19 @@ public class Display {
 	Jobs[] jobs;
 	String preview_description;	
 	ArrayList<Stats> stats = new ArrayList<Stats>();
+	Flesch flesch= new Flesch();
+	
 
+	public Flesch getFlesch() {
+		return flesch;
+	}
+	public void setFlesch() {
+		
+		double[] val = FleschCalculator.calculateScore(this.preview_description);
+		this.flesch.setFlesch_count(val[0]);
+		this.flesch.setFKGL(val[1]);
+	}
+	
 	public ArrayList<Stats> getStats() {
 		return stats;
 	}

@@ -166,5 +166,13 @@ public class ApplicationController extends Controller {
 					.queryAllTweets(keyword)
 					.thenApplyAsync(r -> ok(statsGlobal.render(keyword, r)));
 	    }
+	 
+
+	 public CompletionStage<Result> flesch(String keyword, String title) {
+			 
+			 return tenTweetsForKeywordService
+						.queryTenTweets(keyword)
+						.thenApplyAsync(r -> ok(flesch.render(keyword, title, r)));
+		    }
 	
 }
