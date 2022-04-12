@@ -122,4 +122,5 @@ public class UserProfileService {
 					.map(x -> Json.fromJson(x, Display.class))
 					.collect(Collectors.toList()));
     }
+    
 }

@@ -13,7 +13,9 @@ GET         /responsive                              controllers.ResponsiveAppli
 GET         /responsive/websocket                    controllers.ResponsiveApplicationController.websocket
 GET 		/stats/:keyword/:current				 controllers.ApplicationController.stats(keyword: String, current: String)
 GET 		/globalstats/:keyword				     controllers.ApplicationController.statsGlobal(keyword: String)
+GET 		/globalflesch/:keyword				     controllers.ApplicationController.fleschGlobal(keyword: String)
 GET 		/flesch/:keyword/:current				 controllers.ApplicationController.flesch(keyword: String, current: String)
+GET 		/profile/flesch/:id/:current		     controllers.ApplicationController.fleschUser(id: String, current: String)
 GET 		/skills/:keyword					     controllers.ResponsiveApplicationController.skills(keyword: String)
 GET 		/profile/stats/:id/:current				 controllers.ApplicationController.statsUser(id: String, current: String)
 

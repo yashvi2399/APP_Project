@@ -174,5 +174,19 @@ public class ApplicationController extends Controller {
 						.queryTenTweets(keyword)
 						.thenApplyAsync(r -> ok(flesch.render(keyword, title, r)));
 		    }
+	 
+	 public CompletionStage<Result> fleschUser(String id, String title) {
+		 
+		 return userProfileService
+					.getUserLastTenTweets(id)
+					.thenApplyAsync(r -> ok(fleschUser.render(id, title, r)));
+	    }
+	 
+public CompletionStage<Result> fleschGlobal(String keyword) {
+		 
+		 return tenTweetsForKeywordService
+					.queryAllTweets(keyword)
+					.thenApplyAsync(r -> ok(fleschGlobal.render(keyword, r)));
+	    }
 	
 }

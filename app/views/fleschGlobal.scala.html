@@ -1,0 +1,33 @@
+@(message: String , results: List[Display])
+
+@main("Welcome to Freelancelot") {
+
+	<h1 align="center">Global Readability for @message</h1>
+	
+		<table align=center	>
+		
+		<script>
+		var avgflesch
+		var avgfkgl
+		</script>
+					
+						@for(res <- results){
+							@res.setFlesch()
+							
+								<script>
+								avgflesch = avgflesch + res.getFlesch().getFlesch_count()
+								avgfkgl = avgfkgl + res.getFlesch().getFKGL()
+								</script>				
+						} 
+					
+						<script>
+						
+						document.getElementById("fc").innerHTML = "Readability: " + avgflesch;
+    					document.getElementById("fl").innerHTML = "FKGL: " + avgfkgl;
+    
+						
+						</script>
+				
+		</table>
+
+  }

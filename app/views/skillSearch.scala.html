@@ -87,8 +87,10 @@
                                             }
   											var link = "http://localhost:9000/stats/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
   											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
-  											toAppend += "<td>  &nbsp | &nbsp <a href=\" @routes.ResponsiveApplicationController.readability() \">  Readability  &nbsp  </td>";
-                                       
+  											
+  											var link2 = "http://localhost:9000/flesch/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
+  											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link2 + "\"> Readability  &nbsp  </td>";
+  											
                                         toAppend += "</tr>"
                                         toAppend += "</table>";
                                         toAppend += "</li>";

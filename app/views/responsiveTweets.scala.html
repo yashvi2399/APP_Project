@@ -87,6 +87,9 @@
                         toAppend += "<h5> Search results for: " + keyPhrase + "</h5>";
                         var link3 = "http://localhost:9000/globalstats/" +text ;
   						toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link3 + "\"> Global Stats </a> &nbsp  </td>";
+  						var link4 = "http://localhost:9000/globalflesch/" +text ;
+  						toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link4 + "\"> Global Readability </a> &nbsp  </td>";
+  						
                         for (var el in tweetsForKeyPhrase) {
                             //console.log("getElementById(keyPhraseId) == found the element");
                             
@@ -107,6 +110,7 @@
                                             
                                             var link = "http://localhost:9000/stats/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
   											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
+  											
   											var link2 = "http://localhost:9000/flesch/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
   											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link2 + "\"> Readability  &nbsp  </td>";
   											
