@@ -29,7 +29,7 @@ public class UserProfileService {
 	 */
     private final WSClient wsClient;
 
-  
+    
     /**
 	 * Base url of Twitter API
 	 */

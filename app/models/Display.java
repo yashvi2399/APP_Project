@@ -11,9 +11,15 @@ public class Display {
 	String title;
 	String type;
 	Jobs[] jobs;
-	long skill_id;
+	String preview_description;	
 	
-	
+	public String getPreview_description() {
+		return preview_description;
+	}
+	public void setPreview_description(String preview_description) {
+		this.preview_description = preview_description;
+	}
+
 	/**
 	 * To fetch owner ID
 	 * @return owner ID

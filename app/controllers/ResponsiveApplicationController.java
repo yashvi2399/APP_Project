@@ -8,6 +8,9 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.stream.Materializer;
 import akka.stream.javadsl.Flow;
+import models.Display;
+import models.Stats;
+
 import org.webjars.play.WebJarsUtil;
 import play.Logger;
 import play.libs.F.Either;
@@ -18,17 +21,24 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.WebSocket;
-import services.SchedulingService;
-import services.TenTweetsForKeywordService;
+import services.*;
 import views.html.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Implements responsive controller that enables opening a Websocket
@@ -66,6 +76,7 @@ public class ResponsiveApplicationController extends Controller {
      * Tweets search service
      */
     private TenTweetsForKeywordService tenTweetsForKeywordService;
+    
 
     /**
      * Execution context that wraps execution pool
@@ -123,13 +134,6 @@ public class ResponsiveApplicationController extends Controller {
             return ok(responsiveTweets.render(webJarsUtil));
         }, ec.current());
     }
-
-    public CompletionStage<Result> stats() {
-
-        return CompletableFuture.supplyAsync(() -> {
-            return ok(stats.render());
-        }, ec.current());
-    }
     
     public CompletionStage<Result> readability() {
 
@@ -141,7 +145,14 @@ public class ResponsiveApplicationController extends Controller {
     public CompletionStage<Result> skills(String keyword) {
 
         return CompletableFuture.supplyAsync(() -> {
-            return ok(skills.render(keyword));
+            return ok(skillSearch.render(webJarsUtil, keyword));
+        }, ec.current());
+    }
+    
+    public CompletionStage<Result> stats(String keyword, String title) {
+
+        return CompletableFuture.supplyAsync(() -> {
+            return ok(stats.render(keyword, title));
         }, ec.current());
     }
     /**

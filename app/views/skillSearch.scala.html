@@ -1,20 +1,7 @@
-@(webJarsUtil: org.webjars.play.WebJarsUtil)
+@(webJarsUtil: org.webjars.play.WebJarsUtil, keyword: String)
 
     @main("ResponsiveTweetSearch") {
     
-        <div class="container">
-            <div class="input-group mt-3 mb-3">
-                <input id="searchKeyPhrase" type="text"
-                class="form-control border border-success"
-                placeholder="Enter a Key word phrase (ex. Content Writer)"
-                aria-describedby="basic-addon2"
-                autofocus>
-                <div class="input-group-append">
-                    <button id="send" class="btn btn-outline-success" type="submit">Send</button>
-                </div>
-            </div>
-        </div>
-
         <div class="container" id="messages">
                 <!-- This container would be filled by script below -->
         </div>
@@ -22,42 +9,36 @@
         @Html(webJarsUtil.script("jquery.min.js"))
 
         <script language="javascript">
-                console.log('JS Beginning');
-                var text = "";
-                var $messages = $("#messages"),
-                        $send = $("#send"),
-                        $searchKeyPhrase = $("#searchKeyPhrase"),
+                	//console.log('JS Beginning');
+                
+                	var $messages = $("#messages"),
+                        
                         connection = new WebSocket("@routes.ResponsiveApplicationController.websocket().webSocketURL()"),
                         userProfileUrl = "@routes.ApplicationController.userProfile("").url";
-                console.log('JS after var');
 
-                $send.prop("disabled", true);
-
-                var send = function () {
-                    text = $searchKeyPhrase.val();
-                    $searchKeyPhrase.val("");
-                    // console.log('sent', text);
-                    // console.log('sent as Json ', JSON.stringify({searchKey: text}));
+                    var text = "@keyword";
+                    
+                	//console.log('JS after keyword');
+                   
+                    //console.log('sent', text);
+                    console.log('sent as Json ', JSON.stringify({searchKey: text}));
+                    
                     var search = {
                         searchKey : ''
                     };
+                    
                     search.searchKey = text;
-                    connection.send(JSON.stringify(search));
-                };
+                    
 
                 connection.onopen = function () {
-                    $send.prop("disabled", false);
-                    $send.on('click', send);
-                    $searchKeyPhrase.keypress(function (event) {
-                        var keycode = (event.keyCode ? event.keyCode : event.which);
-                        if (keycode == '13') {
-                            send();
-                        }
-                    });
+                     console.log("connected");
+                     connection.send(JSON.stringify(search));
+                    
                 };
-
+                
+                
                 connection.onerror = function (error) {
-                    console.log('WebSocket Error ', error);
+                    console.log('error');
                 };
 
                 connection.onmessage = function (event) {
@@ -83,6 +64,8 @@
                             document.getElementById(keyPhraseId).innerHTML = composeTweets(keyPhraseAndTweets[keyPhrase]);
                         }
                     }
+                    
+
                     function composeTweets(tweetsForKeyPhrase) {
                         toAppend += "<h5> Search results for: " + keyPhrase + "</h5>";
                         for (var el in tweetsForKeyPhrase) {
@@ -102,9 +85,7 @@
                                             	var skillname = keyPhraseAndTweets[keyPhrase][el].jobs[skill].name;
                                             	toAppend += "<td> &nbsp <a href=\" http://localhost:9000/skills/" +skillname+ "\">" + skillname + " </a> &nbsp </td>";
                                             }
-                                            
-                                            var link = "http://localhost:9000/stats/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
-  											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
+  											toAppend += "<td>  &nbsp | &nbsp <a href=\" \">  Stats  &nbsp  </td>";
   											toAppend += "<td>  &nbsp | &nbsp <a href=\" @routes.ResponsiveApplicationController.readability() \">  Readability  &nbsp  </td>";
                                        
                                         toAppend += "</tr>"

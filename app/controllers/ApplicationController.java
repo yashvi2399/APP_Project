@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,7 +17,7 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.TenTweetsForKeywordService;
-import services.UserProfileService;
+import services.*;
 import views.html.*;
 
 /**
@@ -39,6 +40,7 @@ public class ApplicationController extends Controller {
 	 * Tweets search service
 	 */
 	private TenTweetsForKeywordService tenTweetsForKeywordService;
+	
 	
 	/**
 	 * Form Factory for managing UI forms
@@ -140,15 +142,10 @@ public class ApplicationController extends Controller {
 	 */
 	public CompletionStage<Result> userProfile(String id) {
 
+		
 		return userProfileService
 				.userProfle(id)
 				.thenApplyAsync(r -> ok(userProfile.render(r)));
 	}
 	
-    public CompletionStage<Result> skills(String keyword) {
-
-    	return tenTweetsForKeywordService
-				.queryTenTweets(keyword)
-				.thenApplyAsync(r -> ok(skills.render(r)));
-    }
 }

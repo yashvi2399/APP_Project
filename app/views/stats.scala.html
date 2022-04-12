@@ -1,11 +1,22 @@
-@()
+@(message: String ,  title: String)
 
-@main("Freelancelot") {
+@main("Welcome to Freelancelot") {
 
-<body>
-<p> </p>
-<h1 align=center> Welcome to Freelancelot </h1>
-<p align=center> Stats Page </p>
+	<h1 align="center">Stats for @message : @title</h1>
+	
+		<table align=center	>
+					
+					<tr>
+					<td> WORDS </td>
+					<td> COUNT </td>
+					</tr>
+					
+				
+		</table>
+	
+	
+	
+	<script>
 
-</body>
-} 
+    </script>
+  }
