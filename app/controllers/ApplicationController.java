@@ -161,11 +161,20 @@ public class ApplicationController extends Controller {
 					.thenApplyAsync(r -> ok(statsUser.render(id, title, r)));
 	    }
 	 
-	 public CompletionStage<Result> statsGlobal(String keyword) {
+	 public CompletionStage<Result> statsGlobal(String keyword) throws InterruptedException, ExecutionException{
 		 
-		 return userProfileService
-					.getUserLastTenTweets(keyword)
-					.thenApplyAsync(r -> ok(statsGlobal.render(keyword, r)));
+		 String statistics = "";
+    	 
+		 List<String> display = tenTweetsForKeywordService.queryAllTweets(keyword);
+		 
+		 for(String str: display) {
+			 statistics = statistics + str;
+		 }
+		 
+		 ArrayList<Stats> statsList = WordStatService.setStats(statistics);
+		 
+		 return CompletableFuture.completedFuture(ok(statsGlobal.render(keyword, statsList)));	
+
 	    }
 	 
 

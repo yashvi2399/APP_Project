@@ -1,98 +1,57 @@
 package services;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import javax.inject.Inject;
+import models.Stats;
 
-import com.google.inject.Singleton;
-
-import models.*;
-import play.libs.Json;
-import play.libs.ws.WSBodyReadables;
-import play.libs.ws.WSClient;
-/**
- * 
- * Implements functionality of fetching 10 tweets based on search phrase.
- * @author Mayank Acharya
- * @version 1.0.0
- */
-
-@Singleton
 public class WordStatService {
-	
-	/**
-	 * Web services client
-	 */
 
-	private final WSClient wsClient;
-	
-	
-	/**
-	 * Base URL of Twitter API
-	 */
-	private String baseUrl="https://www.freelancer.com/api/projects/0.1/projects/";
-	String query = "empty";
-	String suffix = "&compact=false&job_details=true";
-	
-	/**
-	 * Creates this service
-	 * @param wsClient Web Services client
-	 * @param twitterAuth Twitter Authentication service that provide auth token
-	 */
-	@Inject
-	public WordStatService(WSClient wsClient) {
-		this.wsClient = wsClient;
-	}
-	
-	/**
-	 * Retrieves 10 most recent tweets for each of search phrases provided as input
-	 * 
-	 * @param searchStrings list of phrases for which to retrieve 10 most recent tweets  
-	 * @return map where key is a search phrase and value is the associated 
-	 * list of 10 most recent tweets that contain the phrase
-	 */
-	
-	/**
-	 * Sets base url of Twitter API
-	 * @param url sets base url for Twitter API
-	 */
-	
-	public void setBaseUrl(String url) {
-		this.baseUrl = url;
-	}
-	
-	/**
-	 * 
-	 * Retrieves ten most recent tweets with twitter api.
-	 * 
-	 * @param token access token for authenticating with Twitter API
-	 * @param searchString search phrase for which to retrieve ten most recent tweets, may contain spaces.
-	 * 
-	 * @return map with 1 key/value pair where key is the <code>searchString</code> 
-	 * and value is the associated list of ten most recent tweets that contain the 
-	 * <code>searchString</code>
-	 */
-	public CompletionStage<Map<String, List<Display>>> getStats(String searchString, String title) {
-
-		System.out.println("statsss");
-		return CompletableFuture
-				.supplyAsync(() -> wsClient.url(baseUrl.concat("active?query=").concat(searchString.trim().replaceAll(" ", "%20")).concat(suffix))
-						.addQueryParameter("limit","10"))
-				.thenCompose(r -> r.get())
-				.thenApply(r -> r.getBody(WSBodyReadables.instance.json()).get("result").get("projects"))
-				.thenApply(r -> StreamSupport.stream(r.spliterator(), false)
-						.map(x -> Json.fromJson(x, Display.class))
-						.collect(Collectors.toList()))
-				.thenApply(r -> {
-					Map<String, List<Display>> m = new LinkedHashMap<>();
-					m.put(searchString, r);
-					return m;
-				});
+	public static ArrayList<Stats> setStats(String preview_description) {
+		
+		ArrayList<Stats> statsList= new ArrayList<Stats>();
+		
+		List<String> words = Arrays.asList(preview_description.split(" "));
+		
+		
+		Map<String,Long> collect = words.stream()
+			    .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ));
+		
+		LinkedHashMap<String, Long> countByWordSorted = collect.entrySet()
+	            .stream()
+	            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+	            .collect(Collectors.toMap(
+	                    Map.Entry::getKey,
+	                    Map.Entry::getValue,
+	                    (v1, v2) -> {
+	                        throw new IllegalStateException();
+	                    },
+	                    LinkedHashMap::new
+	    ));
+		Set<String> keys = countByWordSorted.keySet();
+		
+		for (String key : keys) {
+			
+			if(!key.equals("")) {
+			
+			Stats stat = new Stats();
+			
+			stat.setWord(key);
+            stat.setCount(countByWordSorted.get(key));
+            
+            statsList.add(stat);
+            
+			}
+		}
+		
+		return statsList;
+		
 	}
 }

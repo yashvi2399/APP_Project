@@ -86,9 +86,9 @@
                     function composeTweets(tweetsForKeyPhrase) {
                         toAppend += "<h5> Search results for: " + keyPhrase + "</h5>";
                         var link3 = "http://localhost:9000/globalstats/" +text ;
-  						toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link3 + "\"> Global Stats </a> &nbsp  </td>";
+  						toAppend += "<td>  &nbsp | &nbsp <a '_blank' href=\"" +  link3 + "\"> Global Stats </a> &nbsp  </td>";
   						var link4 = "http://localhost:9000/globalflesch/" +text ;
-  						toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link4 + "\"> Global Readability </a> &nbsp  </td>";
+  						toAppend += "<td>  &nbsp | &nbsp <a '_blank' href=\"" +  link4 + "\"> Global Readability </a> &nbsp  </td>";
   						
                         for (var el in tweetsForKeyPhrase) {
                             //console.log("getElementById(keyPhraseId) == found the element");
@@ -105,14 +105,14 @@
                                             
                                             for(var skill in keyPhraseAndTweets[keyPhrase][el].jobs) {
                                             	var skillname = keyPhraseAndTweets[keyPhrase][el].jobs[skill].name;
-                                            	toAppend += "<td> &nbsp <a href=\" http://localhost:9000/skills/" +skillname+ "\">" + skillname + " </a> &nbsp </td>";
+                                            	toAppend += "<td> &nbsp <a target='_blank' href=\" http://localhost:9000/skills/" +skillname+ "\">" + skillname + " </a> &nbsp </td>";
                                             }
                                             
                                             var link = "http://localhost:9000/stats/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
-  											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
+  											toAppend += "<td>  &nbsp | &nbsp <a target='_blank' href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
   											
   											var link2 = "http://localhost:9000/flesch/" +text+ "/" + keyPhraseAndTweets[keyPhrase][el].title;
-  											toAppend += "<td>  &nbsp | &nbsp <a href=\"" +  link2 + "\"> Readability  &nbsp  </td>";
+  											toAppend += "<td>  &nbsp | &nbsp <a target='_blank' href=\"" +  link2 + "\"> Readability  &nbsp  </td>";
   											
                                         toAppend += "</tr>"
                                         toAppend += "</table>";

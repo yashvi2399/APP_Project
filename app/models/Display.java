@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import services.FleschCalculator;
+import services.*;
 /**
  * @author Yashvi Pithadia
  *
@@ -37,38 +37,7 @@ public class Display {
 	}
 	public void setStats() {
 		
-		List<String> words = Arrays.asList(this.preview_description.split(" "));
-		
-		
-		Map<String,Long> collect = words.stream()
-			    .collect( Collectors.groupingBy( Function.identity(), Collectors.counting() ));
-		
-		LinkedHashMap<String, Long> countByWordSorted = collect.entrySet()
-	            .stream()
-	            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-	            .collect(Collectors.toMap(
-	                    Map.Entry::getKey,
-	                    Map.Entry::getValue,
-	                    (v1, v2) -> {
-	                        throw new IllegalStateException();
-	                    },
-	                    LinkedHashMap::new
-	    ));
-		Set<String> keys = countByWordSorted.keySet();
-		
-		for (String key : keys) {
-			
-			if(!key.equals("")) {
-			
-			Stats stat = new Stats();
-			
-			stat.setWord(key);
-            stat.setCount(countByWordSorted.get(key));
-            
-            this.stats.add(stat);
-            
-			}
-		}
+		this.stats = WordStatService.setStats(this.preview_description);
 		
 	}
 	public String getPreview_description() {

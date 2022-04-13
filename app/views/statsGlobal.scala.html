@@ -1,16 +1,24 @@
-@(message: String , results:List[Display])
+@(message: String ,  stats: ArrayList[Stats])
 
 @main("Welcome to Freelancelot") {
 
 	<h1 align="center">Global Stats for: @message</h1>
 	
 		<table align=center	>
-					
+		
+					<thead>
 					<tr>
 					<td> WORDS </td>
 					<td> COUNT </td>
 					</tr>
+					</thead>
 					
+					@for(stat <- stats){
+					<tr>
+  				    <td>  &nbsp  @stat.getWord()  </a> &nbsp  </td>
+  					<td>  &nbsp  @stat.getCount()  &nbsp  </td>
+					</tr>
+				}
 				
 		</table>
 	
