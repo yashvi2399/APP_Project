@@ -1,15 +1,18 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
 
 import models.*;
@@ -107,14 +110,28 @@ public class TenTweetsForKeywordService {
 				});
 	}
 	
-	public CompletionStage<List<Display>> queryAllTweets(String searchString) {
+	public List<String> queryAllTweets(String searchString) throws InterruptedException, ExecutionException{
 
-		return CompletableFuture
+		System.out.println(baseUrl.concat("active?query=").concat(searchString.trim().replaceAll(" ", "%20")).concat(suffix));
+		
+		CompletableFuture<List<Display>> displayList = CompletableFuture
 				.supplyAsync(() -> wsClient.url(baseUrl.concat("active?query=").concat(searchString.trim().replaceAll(" ", "%20")).concat(suffix)))
 				.thenCompose(r -> r.get())
 				.thenApply(r -> r.getBody(WSBodyReadables.instance.json()).get("result").get("projects"))
 				.thenApply(r -> StreamSupport.stream(r.spliterator(), false)
 						.map(x -> Json.fromJson(x, Display.class))
 						.collect(Collectors.toList()));
+		
+		List<String> display = new ArrayList<String>();
+		
+		int i=0;
+
+        for (Display jsonNode : displayList.get()) {
+   
+            		String text = jsonNode.getPreview_description();
+            		display.add(text);
+
+			}
+        return display;
 		}
 }

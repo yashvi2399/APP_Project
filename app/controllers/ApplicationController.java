@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -162,8 +163,8 @@ public class ApplicationController extends Controller {
 	 
 	 public CompletionStage<Result> statsGlobal(String keyword) {
 		 
-		 return tenTweetsForKeywordService
-					.queryAllTweets(keyword)
+		 return userProfileService
+					.getUserLastTenTweets(keyword)
 					.thenApplyAsync(r -> ok(statsGlobal.render(keyword, r)));
 	    }
 	 
@@ -182,11 +183,20 @@ public class ApplicationController extends Controller {
 					.thenApplyAsync(r -> ok(fleschUser.render(id, title, r)));
 	    }
 	 
-public CompletionStage<Result> fleschGlobal(String keyword) {
+    public CompletionStage<Result> fleschGlobal(String keyword) throws InterruptedException, ExecutionException {
 		 
-		 return tenTweetsForKeywordService
-					.queryAllTweets(keyword)
-					.thenApplyAsync(r -> ok(fleschGlobal.render(keyword, r)));
+    	 String statistics = "";
+    	 
+		 List<String> display = tenTweetsForKeywordService.queryAllTweets(keyword);
+		 
+		 for(String str: display) {
+			 statistics = statistics + str;
+		 }
+		 
+		 double[] val = FleschCalculator.calculateScore(statistics);
+		 
+		 return CompletableFuture.completedFuture(ok(fleschGlobal.render(keyword, val[0], val[1])));	
+		 
 	    }
 	
 }

@@ -1,33 +1,52 @@
-@(message: String , results: List[Display])
+@(message: String , flesch: Double, fkgl: Double)
 
 @main("Welcome to Freelancelot") {
 
 	<h1 align="center">Global Readability for @message</h1>
 	
-		<table align=center	>
-		
-		<script>
-		var avgflesch
-		var avgfkgl
-		</script>
+		<table align=center>
+								<tr><td>Readability:  @flesch </tr>
+								<tr><td>FKGL:  @fkgl </tr>
 					
-						@for(res <- results){
-							@res.setFlesch()
-							
-								<script>
-								avgflesch = avgflesch + res.getFlesch().getFlesch_count()
-								avgfkgl = avgfkgl + res.getFlesch().getFKGL()
-								</script>				
-						} 
-					
-						<script>
-						
-						document.getElementById("fc").innerHTML = "Readability: " + avgflesch;
-    					document.getElementById("fl").innerHTML = "FKGL: " + avgfkgl;
-    
-						
-						</script>
-				
+								@if(flesch > 100) {
+								<tr>
+      							<td>	Education Level: 4th Grader
+      							</tr>
+    							} else if(90 <  flesch  &&  flesch <= 100) {
+      							<tr>
+      							<td>	Education Level: 5th Grader
+      							</tr>
+    							} else if(80 <  flesch &&  flesch<= 90) {
+      							<tr>
+      							<td>	Education Level: 6th Grader
+      							</tr>
+    							} else if(70 <  flesch &&  flesch <= 80) {
+      							<tr>
+      							<td>	Education Level: 7th Grader
+      							</tr>
+    							} else if(60 <  flesch &&  flesch <= 70) {
+      							<tr>
+      							<td>	Education Level: 8th Grader
+      							</tr>
+    							} else if(50 <  flesch &&  flesch <= 60) {
+      							<tr>
+      							<td>	Education Level: 9th Grader
+      							</tr>
+    							} else if(30 <  flesch &&  flesch <= 50) {
+      							<tr>
+      							<td>	Education Level: High School Graduate
+      							</tr>
+    							} else if(0 <  flesch &&  flesch <= 30) {
+      							<tr>
+      							<td>	Education Level: College Graduate
+      							</tr>
+    							} else if(flesch < 0) {
+      							<tr>
+      							<td>	Education Level: Law School Graduate
+      							</tr>
+    							}
+								</tr>
+
 		</table>
 
   }

@@ -11,18 +11,6 @@
 					<td> COUNT </td>
 					</tr>
 					
-						@for(res <- results){
-							@res.setStats()
-							
-								@for( stat <- res.getStats() ){
-								<tr>
-								<td>@stat.getWord()
-								<td>@stat.getCount()
-								</tr>
-								}	
-							
-						}
-					
 				
 		</table>
 	
