@@ -1,11 +1,10 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
-# SOEN 6441 Twitter App Routes
+# SOEN 6441 Freelancelot App Routes
 
 GET         /                                        controllers.ApplicationController.index()
 + nocsrf
-POST        /                                        controllers.ApplicationController.search()
 GET         /profile/:id                             controllers.ApplicationController.userProfile(id: String)
 
 

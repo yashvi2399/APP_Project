@@ -4,12 +4,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Combines the data of User Profile and Tweets related to that User into single object.
+ * Combines the data of Employer Profile and Projects related to that client into single object.
  *
- * @author Dmitriy Fingerman
- * @version 1.0.0
+ * @author Yashvi Pithadia
  */
-
 public class UserProfileAndProjects {
 
     /**
@@ -18,15 +16,16 @@ public class UserProfileAndProjects {
     private Employer employerProfile;
 
     /**
-     * List to of tweet objects
+     * List to of project objects
      */
     private List<Display> projects;
+
 
     /**
      * Creates new object based on given parameters
      *
-     * @param userProfile User Profile
-     * @param tweets      List of tweets
+     * @param employerProfile Employer Profile
+     * @param projects      List of projects
      */
     public UserProfileAndProjects(Employer employerProfile, List<Display> projects) {
         this.employerProfile = employerProfile;
@@ -34,80 +33,38 @@ public class UserProfileAndProjects {
     }
 
     /**
-     * Returns User Profile object
      *
-     * @return user profile object
+     * @return employer object
      */
     public Employer getEmployer() {
         return employerProfile;
     }
 
     /**
-     * Sets user profile object based
      *
-     * @param userProfile user profile object.
+     * @param employerProfile user profile object.
      */
     public void setEmployer(Employer userProfile) {
         this.employerProfile = employerProfile;
     }
 
     /**
-     * Returns list of tweets associated with this user
+     * Returns list of project associated with this employer
      *
-     * @return list of tweets
+     * @return list of project
      */
     public List<Display> getProjects() {
         return projects;
     }
 
     /**
-     * Sets list of tweets
+     * Sets list of projects
      *
-     * @param tweets list of tweets
+     * @param projects: projects
      */
     public void setProjects(List<Display> projects) {
         this.projects = projects;
     }
 
 
-    /**
-     * Returns string representation of this model
-     *
-     * @return string representation of this model
-     */
-    public String toString() {
-
-        String projectsAsString = projects.stream()
-                .map(x -> x.toString())
-                .reduce("", (a, b) -> a + "\n" + b);
-
-        return employerProfile.toString() + "\n" + projectsAsString;
-    }
-
-    /**
-     * Checks equality of two UserProfileAndTweets objects
-     *
-     * @param o Tweet to compare to
-     * @return result of check
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserProfileAndProjects)) return false;
-        UserProfileAndProjects that = (UserProfileAndProjects) o;
-        return Objects.equals(getEmployer(), that.getEmployer()) &&
-                Objects.equals(getProjects(), that.getProjects());
-    }
-
-
-    /**
-     * Creates a hashcode
-     *
-     * @return hashcode
-     */
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(employerProfile, projects);
-    }
 }

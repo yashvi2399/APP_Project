@@ -1,8 +1,8 @@
 package controllers;
 
-import actors.TwitterSearchActor;
-import actors.TwitterSearchActorProtocol;
-import actors.TwitterSearchSchedulerActor;
+import actors.SearchActor;
+import actors.SearchActorProtocol;
+import actors.SearchSchedulerActor;
 import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -41,12 +41,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Implements responsive controller that enables opening a Websocket
- * with origin check to handles requests for searching tweets
- * according to keywords and displaying Tweeter's user profiles.
+ * Implements responsive controller that enables opening a Websocket with origin check to handles requests for searching projects according to keywords/phrase and displaying employer profiles.
  *
- * @author Dmitriy Fingerman
- * @version 1.0.0
+ * @author Yashvi Pithadia
  */
 
 @Singleton
@@ -73,9 +70,9 @@ public class ResponsiveApplicationController extends Controller {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("controllers.ResponsiveApplicationController");
 
     /**
-     * Tweets search service
+     * Projects search service
      */
-    private TenTweetsForKeywordService tenTweetsForKeywordService;
+    private SearchProjectService searchProjectService;
     
 
     /**
@@ -93,10 +90,11 @@ public class ResponsiveApplicationController extends Controller {
      */
     private ActorRef schedulerActorRef;
 
+
     /**
      * Creates a new Responsive Application Controller
      *
-     * @param tenTweetsForKeywordService Tweets search service
+     * @param searchProjectService       Project search service
      * @param actorSystem                Actors System
      * @param materializer               Materializer
      * @param webJarsUtil                Component to supply Client side dependency
@@ -105,21 +103,21 @@ public class ResponsiveApplicationController extends Controller {
      */
     @Inject
     public ResponsiveApplicationController(
-            TenTweetsForKeywordService tenTweetsForKeywordService,
+            SearchProjectService searchProjectService,
             ActorSystem actorSystem,
             Materializer materializer,
             WebJarsUtil webJarsUtil,
             HttpExecutionContext ec,
             SchedulingService schedulingService) {
 
-        this.tenTweetsForKeywordService = tenTweetsForKeywordService;
+        this.searchProjectService = searchProjectService;
         this.actorSystem = actorSystem;
         this.materializer = materializer;
         this.webJarsUtil = webJarsUtil;
         this.ec = ec;
         this.schedulingService = schedulingService;
 
-        schedulerActorRef = actorSystem.actorOf(TwitterSearchSchedulerActor.props(), "Scheduler"); // Scheduler Part.
+        schedulerActorRef = actorSystem.actorOf(SearchSchedulerActor.props(), "Scheduler"); // Scheduler Part.
         schedulingService.startScheduler(actorSystem.scheduler(), schedulerActorRef);
     }
 
@@ -131,16 +129,10 @@ public class ResponsiveApplicationController extends Controller {
     public CompletionStage<Result> index() {
 
         return CompletableFuture.supplyAsync(() -> {
-            return ok(responsiveTweets.render(webJarsUtil));
+            return ok(responsiveDisplay.render(webJarsUtil));
         }, ec.current());
     }
     
-    public CompletionStage<Result> readability() {
-
-        return CompletableFuture.supplyAsync(() -> {
-            return ok(readability.render());
-        }, ec.current());
-    }
     
     public CompletionStage<Result> skills(String keyword) {
 
@@ -149,12 +141,6 @@ public class ResponsiveApplicationController extends Controller {
         }, ec.current());
     }
     
-    public CompletionStage<Result> stats(String keyword, String title) {
-
-        return CompletableFuture.supplyAsync(() -> {
-            return ok(statsOld.render(keyword, title));
-        }, ec.current());
-    }
     /**
      * Creates WebSocket
      * The request origin parameter is been verified.
@@ -164,21 +150,21 @@ public class ResponsiveApplicationController extends Controller {
     public WebSocket websocket() {
 
         Logger.debug("ApplicationWSController:socket");
-        return WebSocket.json(TwitterSearchActorProtocol.Search.class).acceptOrResult(request -> {
+        return WebSocket.json(SearchActorProtocol.Search.class).acceptOrResult(request -> {
             if (sameOriginCheck(request)) {
 
-                final CompletionStage<Either<Result, Flow<TwitterSearchActorProtocol.Search, Object, ?>>> stage =
+                final CompletionStage<Either<Result, Flow<SearchActorProtocol.Search, Object, ?>>> stage =
                         CompletableFuture.supplyAsync(() -> {
 
                             Object flowAsObject = ActorFlow.actorRef(out ->
-                                            TwitterSearchActor.props(out, schedulerActorRef, tenTweetsForKeywordService),
+                                            SearchActor.props(out, schedulerActorRef, searchProjectService),
                                     actorSystem, materializer);
 
                             @SuppressWarnings("unchecked")
-                            Flow<TwitterSearchActorProtocol.Search, Object, NotUsed> flow =
-                                    (Flow<TwitterSearchActorProtocol.Search, Object, NotUsed>) flowAsObject;
+                            Flow<SearchActorProtocol.Search, Object, NotUsed> flow =
+                                    (Flow<SearchActorProtocol.Search, Object, NotUsed>) flowAsObject;
 
-                            final Either<Result, Flow<TwitterSearchActorProtocol.Search, Object, ?>> right = Either.Right(flow);
+                            final Either<Result, Flow<SearchActorProtocol.Search, Object, ?>> right = Either.Right(flow);
                             return right;
                         });
 
@@ -194,9 +180,9 @@ public class ResponsiveApplicationController extends Controller {
      *
      * @return a HTTP FORBIDDEN if origin check fails
      */
-    private CompletionStage<Either<Result, Flow<TwitterSearchActorProtocol.Search, Object, ?>>> forbiddenResult() {
+    private CompletionStage<Either<Result, Flow<SearchActorProtocol.Search, Object, ?>>> forbiddenResult() {
         final Result forbidden = Results.forbidden("forbidden");
-        final Either<Result, Flow<TwitterSearchActorProtocol.Search, Object, ?>> left = Either.Left(forbidden);
+        final Either<Result, Flow<SearchActorProtocol.Search, Object, ?>> left = Either.Left(forbidden);
 
         return CompletableFuture.completedFuture(left);
     }
@@ -205,8 +191,6 @@ public class ResponsiveApplicationController extends Controller {
      * Checks that the WebSocket address matches the origin request field
      * This is necessary to protect against Cross-Site WebSocket Hijacking
      * as WebSocket does not implement Same Origin Policy.
-     * See https://tools.ietf.org/html/rfc6455#section-1.3 and
-     * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html
      */
     private boolean sameOriginCheck(Http.RequestHeader rh) {
         final Optional<String> origin = rh.header("Origin");

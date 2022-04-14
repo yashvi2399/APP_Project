@@ -1,65 +1,53 @@
-@(message: String , title: String, results: List[Display])
+@(message: String , title: String, flesch: Double, fkgl: Double)
 
-@main("Welcome to Freelancelot") {
+@main("Flesch") {
 
-	<h1 align="center">Readability for @message : @title</h1>
+	<h2 align="center">Readability for @message : @title</h2>
 	
 		<table align=center	>
 
+								<tr><td style="font-size:12px">Readability:  @flesch </tr>
+								<tr><td style="font-size:12px">FKGL:  @fkgl </tr>
 					
-						@for(res <- results){
-							@res.setFlesch()
-							
-							@if(res.getTitle == title) {
+								@if(flesch > 100) {
 								<tr>
-								<td> Readability:  @res.getFlesch().getFlesch_count()
-								</tr>
-								<tr>
-								<td> FKGL:  @res.getFlesch().getFKGL()
-								</tr>
-								<tr>
-								@if(res.getFlesch.getFKGL > 100) {
-								<tr>
-      							<td>	Education Level: 4th Grader
+      							<td style="font-size:12px">	Education Level: 4th Grader
       							</tr>
-    							} else if(90 <  res.getFlesch.getFlesch_count  &&  res.getFlesch.getFlesch_count <= 100) {
+    							} else if(90 <  flesch  &&  flesch <= 100) {
       							<tr>
-      							<td>	Education Level: 5th Grader
+      							<td style="font-size:12px">	Education Level: 5th Grader
       							</tr>
-    							} else if(80 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count<= 90) {
+    							} else if(80 <  flesch &&  flesch<= 90) {
       							<tr>
-      							<td>	Education Level: 6th Grader
+      							<td style="font-size:12px">	Education Level: 6th Grader
       							</tr>
-    							} else if(70 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 80) {
+    							} else if(70 <  flesch &&  flesch <= 80) {
       							<tr>
-      							<td>	Education Level: 7th Grader
+      							<td style="font-size:12px">	Education Level: 7th Grader
       							</tr>
-    							} else if(60 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 70) {
+    							} else if(60 <  flesch &&  flesch <= 70) {
       							<tr>
-      							<td>	Education Level: 8th Grader
+      							<td style="font-size:12px">	Education Level: 8th Grader
       							</tr>
-    							} else if(50 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 60) {
+    							} else if(50 <  flesch &&  flesch <= 60) {
       							<tr>
-      							<td>	Education Level: 9th Grader
+      							<td style="font-size:12px">	Education Level: 9th Grader
       							</tr>
-    							} else if(30 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 50) {
+    							} else if(30 <  flesch &&  flesch <= 50) {
       							<tr>
-      							<td>	Education Level: High School Graduate
+      							<td style="font-size:12px">	Education Level: High School Graduate
       							</tr>
-    							} else if(0 <  res.getFlesch.getFlesch_count &&  res.getFlesch.getFlesch_count <= 30) {
+    							} else if(0 <  flesch &&  flesch <= 30) {
       							<tr>
-      							<td>	Education Level: College Graduate
+      							<td style="font-size:12px">	Education Level: College Graduate
       							</tr>
-    							} else if(res.getFlesch.getFlesch_count < 0) {
+    							} else if(flesch < 0) {
       							<tr>
-      							<td>	Education Level: Law School Graduate
+      							<td style="font-size:12px">	Education Level: Law School Graduate
       							</tr>
     							}
 								</tr>
-								}	
 
-					
-					} 
 				
 		</table>
 

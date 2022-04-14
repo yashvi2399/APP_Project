@@ -12,8 +12,16 @@ import java.util.stream.Collectors;
 
 import models.Stats;
 
+/**
+ * @author Yashvi Pithadia
+ *
+ */
 public class WordStatService {
 
+	/**
+	 * @param preview_description: Project description
+	 * @return calculated wordstat list
+	 */
 	public static ArrayList<Stats> setStats(String preview_description) {
 		
 		ArrayList<Stats> statsList= new ArrayList<Stats>();

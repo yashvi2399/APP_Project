@@ -14,29 +14,18 @@ import com.miguno.akka.testing.VirtualTime;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.Config;
 
-/**
- * Tests the functionality of Scheduling Service.
- * @author Dmitriy Fingerman
- * @version 1.0.0
- */
+
 public class SchedulingServiceTest {
 
 	static ActorSystem system;
 	
-	/**
-     * Initializes objects needed for tests before each unit test
-     */
-	
+
     @BeforeClass
     public static void setup() {
        	Config customConf = ConfigFactory.parseString("akka.actor.default-dispatcher { type=\"akka.testkit.CallingThreadDispatcherConfigurator\"}");
         system = ActorSystem.create("ActorSystem", ConfigFactory.load(customConf));
     }
 
-    /**
-     * Teardown function to allow the test case to do a preparation
-     * and post clean up process for each of the test method call
-     */
     
     @AfterClass
     public static void teardown() {
@@ -44,12 +33,7 @@ public class SchedulingServiceTest {
         system = null;
     }
     
-    /**
-	 * Tests Scheduling Service start Scheduler method
-	 * Here we set the scheduler function to the virtual time
-	 * by advancing the duration
-	 * Scheduler Virtual time result is asserted using expectMsgClass 
-	 */
+ 
         
     @Test
     public void whenStartingSchedulerThenSchedulerActorStartsReceivingRefreshAllMessages() {
@@ -63,7 +47,7 @@ public class SchedulingServiceTest {
         	schedulingService.startScheduler(virtualTime.scheduler(), probe.getRef());
         	virtualTime.advance(Duration.create(3, TimeUnit.SECONDS));
         	
-        	probe.expectMsgClass(duration("3 second"), actors.TwitterSearchSchedulerActorProtocol.RefreshAll.class);
+        	probe.expectMsgClass(duration("3 second"), actors.SearchSchedulerActorProtocol.RefreshAll.class);
         }};
     }
 }

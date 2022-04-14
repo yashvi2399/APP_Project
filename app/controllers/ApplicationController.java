@@ -21,11 +21,9 @@ import services.*;
 import views.html.*;
 
 /**
- * Implements controller that handles requests for searching tweets according to keywords
- * and displaying Tweeter's user profiles.
- *  
- * @author Nikita Baranov
- * @version 1.0.0
+ * Implements controller that handles requests for searching project according to keywords
+ * and displaying employer profiles.
+ * @author Tanvi Patel
  *
  */
 @Singleton
@@ -37,9 +35,9 @@ public class ApplicationController extends Controller {
 	private UserProfileService userProfileService;
 	
 	/**
-	 * Tweets search service
+	 * projects search service
 	 */
-	private TenTweetsForKeywordService tenTweetsForKeywordService;
+	private SearchProjectService searchProjectService;
 	
 	private WordStatService wordStatService;
 	/**
@@ -60,19 +58,19 @@ public class ApplicationController extends Controller {
 	/**
 	 * Creates a new application controller
 	 * @param userProfileService         User profile retrieval service
-	 * @param tenTweetsForKeywordService Tweets search service
+	 * @param searchProjectService       projects search service
 	 * @param formFactory                Form Factory
 	 * @param ec                         Execution context
 	 */
 	@Inject
 	public ApplicationController(
 			UserProfileService userProfileService,
-			TenTweetsForKeywordService tenTweetsForKeywordService,
+			SearchProjectService searchProjectService,
 			FormFactory formFactory,
 			HttpExecutionContext ec){
 		
 		this.userProfileService = userProfileService;
-		this.tenTweetsForKeywordService = tenTweetsForKeywordService;
+		this.searchProjectService = searchProjectService;
 		this.formFactory = formFactory;
 		this.ec = ec;
 	}
@@ -89,55 +87,13 @@ public class ApplicationController extends Controller {
 			return ok(index.render(searchForm, null));
 		});
 	}
-	
-	/**
-	 * Handles tweet search based on keywords.
-	 * 
-	 * Retrieves a search phrase from a UI form. 
-	 * Then, if the phrase is not empty, updates the list of searches with this new phrase 
-	 * and calls tweet search service with the full history of previous and current search phrases.
-	 * 
-	 * Then renders a view with the result of all search phrases.
-	 * 
-	 * @return promise of a result with a rendered view of tweet searches.
-	 */
-	public CompletionStage<Result> search() {
-				
-		CompletionStage<Form<String>> searchFormFuture = 
-			CompletableFuture.supplyAsync(() -> {
-				
-				Form<String> searchForm = formFactory.form(String.class).bindFromRequest();
-				String searchString = searchForm.field("searchString").getValue().get().trim();
-		
-				if (!searchString.isEmpty()) {
-					memory.add(0, searchString);
-					System.out.println(searchString);
-				}
-				
-				return searchForm;
-			}, ec.current());
-		
-		CompletionStage<Map<String, List<Display>>> mapFuture = 
-			searchFormFuture.thenCompose(r -> {
-			
-				if (!memory.isEmpty()) {
-					System.out.println(memory);
-					return tenTweetsForKeywordService.getTenTweetsForKeyword(memory);
-				}
-				return
-					CompletableFuture.supplyAsync(() -> {
-						return null;
-					});
-			});
-		
-		return searchFormFuture.thenCombine(mapFuture, (form, map) -> ok(index.render(form, map)));
-	}
+
 
 	/**
-	 * Retrieves user profile info and user's last 10 tweets 
+	 * Retrieves user profile info and user's last 10 projects 
 	 * and renders a view with this info.
 	 * 
-	 * @param userProfileId Twitter account ID
+	 * @param Id  employer ID
 	 * @return promise of a result with a rendered view of user profile info
 	 */
 	public CompletionStage<Result> userProfile(String id) {
@@ -147,25 +103,62 @@ public class ApplicationController extends Controller {
 				.thenApplyAsync(r -> ok(userProfile.render(r)));
 	}
 	
-	 public CompletionStage<Result> stats(String keyword, String title) {
+	 /**
+		 * @param keyword keyword searched
+		 * @param title	project title
+		 * @return completion Stage of wordStat on index 
+		 * @throws InterruptedException
+		 * @throws ExecutionException
+		 */
+	 public CompletionStage<Result> stats(String keyword, String title) throws InterruptedException, ExecutionException {
 		 
-		 return tenTweetsForKeywordService
-					.queryTenTweets(keyword)
-					.thenApplyAsync(r -> ok(stats.render(keyword, title, r)));
+		 String statistics = "";
+    	 
+		 List<String> display = searchProjectService.queryStringTenDisplays(keyword,title);
+		 
+		 for(String str: display) {
+			 statistics = statistics + str;
+		 }
+		 
+		 ArrayList<Stats> statsList = WordStatService.setStats(statistics);
+		 
+		 return CompletableFuture.completedFuture(ok(stats.render(keyword, title,statsList)));	
+
 	    }
 	 
-	 public CompletionStage<Result> statsUser(String id, String title) {
+	 /**
+		 * @param id 	employer ID
+		 * @param title Project Title
+		 * @return completion Stage of wordStat on User profile
+		 * @throws InterruptedException
+		 * @throws ExecutionException
+		 */
+	 public CompletionStage<Result> statsUser(String id, String title) throws InterruptedException, ExecutionException{
 		 
-		 return userProfileService
-					.getUserLastTenTweets(id)
-					.thenApplyAsync(r -> ok(statsUser.render(id, title, r)));
+		 String statistics = "";
+    	 
+		 List<String> display = userProfileService.queryStringTenDisplays(id,title);
+		 
+		 for(String str: display) {
+			 statistics = statistics + str;
+		 }
+		 
+		 ArrayList<Stats> statsList = WordStatService.setStats(statistics);
+		 
+		 return CompletableFuture.completedFuture(ok(statsUser.render(id, title,statsList)));	
 	    }
 	 
+	 /**
+		 * @param keyword search phrase
+		 * @return completion Stage of global wordStat
+		 * @throws InterruptedException
+		 * @throws ExecutionException
+		 */
 	 public CompletionStage<Result> statsGlobal(String keyword) throws InterruptedException, ExecutionException{
 		 
 		 String statistics = "";
     	 
-		 List<String> display = tenTweetsForKeywordService.queryAllTweets(keyword);
+		 List<String> display = searchProjectService.queryAllDisplays(keyword);
 		 
 		 for(String str: display) {
 			 statistics = statistics + str;
@@ -178,25 +171,64 @@ public class ApplicationController extends Controller {
 	    }
 	 
 
-	 public CompletionStage<Result> flesch(String keyword, String title) {
+	 /**
+	 * @param keyword Search Phrase
+	 * @param title   Project Title
+	 * @return HTML page
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	 public CompletionStage<Result> flesch(String keyword, String title) throws InterruptedException, ExecutionException{
 			 
-			 return tenTweetsForKeywordService
-						.queryTenTweets(keyword)
-						.thenApplyAsync(r -> ok(flesch.render(keyword, title, r)));
+	    	 String statistics = "";
+	    	 
+			 List<String> display = searchProjectService.queryStringTenDisplays(keyword,title);
+			 
+			 for(String str: display) {
+				 statistics = statistics + str;
+			 }
+			 
+			 double[] val = FleschCalculator.calculateScore(statistics);
+			 
+			 return CompletableFuture.completedFuture(ok(flesch.render(keyword, title,val[0], val[1])));	
+
 		    }
 	 
-	 public CompletionStage<Result> fleschUser(String id, String title) {
+
+	 /**
+	 * @param id		Employer ID
+	 * @param title		Project Title
+	 * @return	HTML page for employee
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	 public CompletionStage<Result> fleschUser(String id, String title) throws InterruptedException, ExecutionException{
 		 
-		 return userProfileService
-					.getUserLastTenTweets(id)
-					.thenApplyAsync(r -> ok(fleschUser.render(id, title, r)));
+		 String statistics = "";
+    	 
+		 List<String> display = userProfileService.queryStringTenDisplays(id,title);
+		 
+		 for(String str: display) {
+			 statistics = statistics + str;
+		 }
+		 
+		 double[] val = FleschCalculator.calculateScore(statistics);
+		 
+		 return CompletableFuture.completedFuture(ok(fleschUser.render(id, title,val[0], val[1])));	
+
 	    }
 	 
+	 /**
+	     * @param keyword		Search Phrase
+	     * @return				HTML page
+	     * @throws InterruptedException
+	     * @throws ExecutionException
+	     */
     public CompletionStage<Result> fleschGlobal(String keyword) throws InterruptedException, ExecutionException {
 		 
     	 String statistics = "";
     	 
-		 List<String> display = tenTweetsForKeywordService.queryAllTweets(keyword);
+		 List<String> display = searchProjectService.queryAllDisplays(keyword);
 		 
 		 for(String str: display) {
 			 statistics = statistics + str;

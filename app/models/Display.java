@@ -18,30 +18,10 @@ public class Display {
 	String type;
 	Jobs[] jobs;
 	String preview_description;	
-	ArrayList<Stats> stats = new ArrayList<Stats>();
-	Flesch flesch= new Flesch();
 	
-
-	public Flesch getFlesch() {
-		return flesch;
-	}
-	public void setFlesch() {
-		
-		double[] val = FleschCalculator.calculateScore(this.preview_description);
-		this.flesch.setFlesch_count(val[0]);
-		this.flesch.setFKGL(val[1]);
-	}
 	
-	public ArrayList<Stats> getStats() {
-		return stats;
-	}
-	public void setStats() {
-		
-		this.stats = WordStatService.setStats(this.preview_description);
-		
-	}
 	public String getPreview_description() {
-		return preview_description;
+		return preview_description.replaceAll("/", " ");
 	}
 	public void setPreview_description(String preview_description) {
 		this.preview_description = preview_description;
@@ -66,7 +46,7 @@ public class Display {
 	 * @return Project Title
 	 */
 	public String getTitle() {
-		return title;
+		return title.replaceAll("/", " ");
 	}
 	/**
 	 * Store Project Title

@@ -1,52 +1,44 @@
 @(userProfileAndProjects: UserProfileAndProjects)
 
 @main("Profile") {
-	<div class="container mt-3">
-   		<div class="media bg-success-light  rounded">
-			<div class="media-body">
- 				<table>
-		
-					<tr> Id: @userProfileAndProjects.getEmployer.getId </tr><br>
-  					<tr> Username: @userProfileAndProjects.getEmployer.getUsername</tr><br>
-  					<tr> Registration date: @userProfileAndProjects.getEmployer.getRegistration_date </tr><br>
-  					<tr> Limited account: @userProfileAndProjects.getEmployer.getLimited_account </tr><br>
-  					<tr> Display name: @userProfileAndProjects.getEmployer.getDisplay_name </tr><br>
-  					<tr> Country: @userProfileAndProjects.getEmployer.getLocation.getCountry.getName </tr><br>
-  					<tr> Role: @userProfileAndProjects.getEmployer.getRole </tr><br>
-  					<tr> Chosen Role: @userProfileAndProjects.getEmployer.getChosen_role </tr><br>
-  					<tr> Email verified: @userProfileAndProjects.getEmployer.getStatus.isEmail_verified </tr><br>
-  								
-		</table>
- 				</div>
-			</div>
-		</div>
 
-   	<div class="container">
-   		<ul class="list-unstyled">
+			<div align = center>
+
+					<p style="font-size:12px"> Id: @userProfileAndProjects.getEmployer.getId </p>
+  					<p style="font-size:12px"> Username: @userProfileAndProjects.getEmployer.getUsername</p>
+  					<p style="font-size:12px"> Registration date: @userProfileAndProjects.getEmployer.getRegistration_date </p>
+  					<p style="font-size:12px"> Limited account: @userProfileAndProjects.getEmployer.getLimited_account </p>
+  					<p style="font-size:12px"> Display name: @userProfileAndProjects.getEmployer.getDisplay_name </p>
+  					<p style="font-size:12px"> Country: @userProfileAndProjects.getEmployer.getLocation.getCountry.getName </p>
+  					<p style="font-size:12px"> Role: @userProfileAndProjects.getEmployer.getRole </p>
+  					<p style="font-size:12px"> Chosen Role: @userProfileAndProjects.getEmployer.getChosen_role </p>
+  					<p style="font-size:12px"> Email verified: @userProfileAndProjects.getEmployer.getStatus.isEmail_verified </p>
+
+ 			</div>
+ 				
+ 				<br>
+ 				<br>
+
+   	<div>
 		@for(dis <- userProfileAndProjects.getProjects){
-			<li class="media bg-light border border-primary rounded p-3 mt-3 mb-3">
-    			<div>
 				<table>	
 					<tr>
-  					<td> <a href="@routes.ApplicationController.userProfile(dis.getOwner_id)"> &nbsp  @dis.getOwner_id &nbsp  </td>
-  					<td>  &nbsp  @dis.getTime_submitted  &nbsp  </td>
-  					<td>  &nbsp  @dis.getTitle  &nbsp  </td>
-  					<td>  &nbsp  Type: @dis.getType  &nbsp  </td>
+  					<td style="font-size:12px"> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a href="@routes.ApplicationController.userProfile(dis.getOwner_id)">  @dis.getOwner_id &nbsp  </td>
+  					<td style="font-size:12px">  |  @dis.getTime_submitted  &nbsp  </td>
+  					<td style="font-size:12px">  |  @dis.getTitle  &nbsp  </td>
+  					<td style="font-size:12px">  |  Type: @dis.getType  &nbsp  </td>
   					
-  					<td>  &nbsp Skills: 
+  					<td style="font-size:12px">  | Skills: 
   					@for(job <- dis.getJobs){
 					<a href="http://localhost:9000/skills/@job.getName"> &nbsp @job.getName &nbsp 
 					}
 					</td>
 					
-  					<td> &nbsp | &nbsp  <a href="@routes.ApplicationController.statsUser(dis.getOwner_id,dis.getTitle)"> Stats  &nbsp  </td>
-  					<td> &nbsp | &nbsp  <a href="@routes.ApplicationController.fleschUser(dis.getOwner_id,dis.getTitle)"> Readability  &nbsp  </td>
+  					<td style="font-size:12px">  |  <a href="@routes.ApplicationController.statsUser(dis.getOwner_id,dis.getTitle)"> Stats  &nbsp  </td>
+  					<td style="font-size:12px">  |  <a href="@routes.ApplicationController.fleschUser(dis.getOwner_id,dis.getTitle)"> Readability  &nbsp  </td><br>
   					
   					</tr>
 				</table>
-				</div> 
-   			</li>
 		}
-		</ul>
    	</div>
 }

@@ -16,7 +16,7 @@ import play.shaded.ahc.org.asynchttpclient.ws.WebSocket;
 import play.test.Helpers;
 import play.test.WithServer;
 import services.SchedulingService;
-import services.TenTweetsForKeywordService;
+import services.SearchProjectService;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -30,80 +30,48 @@ import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.fakeRequest;
 
-/**
- * Tests the functionality of Responsive Application Controller.
- *
- * @author Nikita Baranov
- * @version 1.0.0
- */
+
 
 public class ResponsiveApplicationControllerTest extends WithServer {
 
-    /**
-     * Actors System
-     */
+
     private static ActorSystem system;
 
-    /**
-     * Mock Materializer
-     */
+
     private final Materializer materializer = mock(Materializer.class);
 
-    /**
-     * Mock Component to supply Client side dependency
-     */
+   
     private final WebJarsUtil webJarsUtil = mock(WebJarsUtil.class);
 
-    /**
-     * Async Http Client for the WebSocket
-     */
+  
     private AsyncHttpClient asyncHttpClient;
 
-    /**
-     * Mock of tweet search service
-     */
-    private TenTweetsForKeywordService tenTweetsForKeywordService = mock(TenTweetsForKeywordService.class);
+  
+    private SearchProjectService searchProjectService = mock(SearchProjectService.class);
 
-    /**
-     * Mock Scheduling service
-     */
+
     private SchedulingService schedulingService = mock(SchedulingService.class);
 
-    /**
-     * Execution context that encapsulates inside a Fork/Join pool.
-     * This is a real object and not a mock because it is used to run async operations
-     */
+ 
     private HttpExecutionContext ec = new HttpExecutionContext(ForkJoinPool.commonPool());
 
-    /**
-     * Initializes objects needed for tests before each unit test
-     */
+  
     @Before
     public void setUpHttpContext() {
         asyncHttpClient = new DefaultAsyncHttpClient();
         system = ActorSystem.create();
     }
 
-    /**
-     * Clears HttpContext to clear the session data
-     *
-     * @throws IOException TO handle failed I/O Exception
-     */
     @After
     public void clearHttpContext() throws IOException {
         asyncHttpClient.close();
     }
 
-    /**
-     * Correct view rendering
-     *
-     * @throws InterruptedException
-     * @throws ExecutionException
-     */
+ 
     @Test
     public void index_success() throws InterruptedException, ExecutionException {
         ResponsiveApplicationController controller = new ResponsiveApplicationController(
-                tenTweetsForKeywordService,
+                searchProjectService,
                 system,
                 materializer,
                 webJarsUtil,
@@ -120,15 +88,9 @@ public class ResponsiveApplicationControllerTest extends WithServer {
 
         assertThat(result.status(), is(equalTo(OK)));
         assertThat(result.contentType().get(), is(equalTo("text/html")));
-        assertThat(contentAsString(result).contains("TweetAnalytics Assignment 1 and 2"), is(equalTo(true)));
     }
 
-    /**
-     * Calls WebSocket using WebSocketTestClient with correct origin
-     * expects http request to be upgraded and WebSocket to be opened
-     *
-     * @throws Exception
-     */
+  
     @Test
     public void websocket_success() throws Exception {
         String serverURL = "ws://localhost:" + this.testServer.port() + "/responsive/websocket";
@@ -140,9 +102,7 @@ public class ResponsiveApplicationControllerTest extends WithServer {
         assertThat(true, is(equalTo(webSocket.isOpen())));
     }
 
-    /**
-     * Calls WebSocket using WebSocketTestClient with incorrect origin
-     */
+  
     @Test(expected = ExecutionException.class)
     public void websocket_wronOrigin_error() throws Exception {
         String serverURL = "ws://localhost:" + this.testServer.port() + "/responsive/websocket";

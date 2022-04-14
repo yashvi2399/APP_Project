@@ -1,34 +1,24 @@
-@(message: String , title: String, results: Map[String, List[Display]])
+@(message: String , title: String,  stats: ArrayList[Stats])
 
-@main("Welcome to Freelancelot") {
+@main("Stats") {
 
-	<h1 align="center">Stats for @message : @title</h1>
+	<h2 align="center">Stats for @message : @title</h2>
 	
 		<table align=center	>
 					
+					<thead>
 					<tr>
-					<td> WORDS </td>
-					<td> COUNT </td>
+					<td style="font-size:14px"> WORDS </td>
+					<td style="font-size:14px"> COUNT </td>
 					</tr>
+					</thead>
 					
-					@for((word, result) <- results ){
-					
-						@for(res <- result){
-							@res.setStats()
-							
-							@if(res.getTitle == title) {
-							
-								@for( stat <- res.getStats() ){
-								<tr>
-								<td>@stat.getWord()
-								<td>@stat.getCount()
-								</tr>
-								}	
-							}
-							
-						}
-					
-					} 
+					@for(stat <- stats){
+					<tr>
+  				    <td style="font-size:12px">  &nbsp  @stat.getWord()  </a> &nbsp  </td>
+  					<td style="font-size:12px">  &nbsp  @stat.getCount()  &nbsp  </td>
+					</tr>
+				}
 				
 		</table>
 	

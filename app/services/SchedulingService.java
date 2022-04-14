@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import actors.TwitterSearchSchedulerActorProtocol.RefreshAll;
+import actors.SearchSchedulerActorProtocol.RefreshAll;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Scheduler;
@@ -13,15 +13,14 @@ import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
+
 /**
  * Implements scheduling service which is responsible for
- * retrieving tweets from all the previous searched
- * keywords every X amount of time
+ * retrieving projects from all the previous searched
+ * keywords
  * 
- * @author Mayank Acharya
- * @version 1.0.0
+ * @author Yashvi Pithadia
  */
-
 @Singleton
 public class SchedulingService {
 	

@@ -1,7 +1,20 @@
-@(webJarsUtil: org.webjars.play.WebJarsUtil, keyword: String)
+@(webJarsUtil: org.webjars.play.WebJarsUtil)
 
-    @main("SkillSearch") {
+    @main("ResponsiveSearch") {
     
+        <div  align=center class="container">
+            <div class="input-group mt-3 mb-3">
+                <input size="36" id="searchKeyPhrase" type="text"
+                class="form-control border border-success"
+                placeholder="Enter a Key word phrase (ex. Content Writer)"
+                aria-describedby="basic-addon2"
+                autofocus>
+                <div class="input-group-append">
+                    <button id="send" class="btn btn-outline-success" type="submit">Send</button>
+                </div>
+            </div>
+        </div>
+
         <div class="container" id="messages">
                 <!-- This container would be filled by script below -->
         </div>
@@ -9,36 +22,42 @@
         @Html(webJarsUtil.script("jquery.min.js"))
 
         <script language="javascript">
-                	//console.log('JS Beginning');
-                
-                	var $messages = $("#messages"),
-                        
+                console.log('JS Beginning');
+                var text = "";
+                var $messages = $("#messages"),
+                        $send = $("#send"),
+                        $searchKeyPhrase = $("#searchKeyPhrase"),
                         connection = new WebSocket("@routes.ResponsiveApplicationController.websocket().webSocketURL()"),
                         userProfileUrl = "@routes.ApplicationController.userProfile("").url";
+                console.log('JS after var');
 
-                    var text = "@keyword";
-                    
-                	//console.log('JS after keyword');
-                   
-                    //console.log('sent', text);
-                    console.log('sent as Json ', JSON.stringify({searchKey: text}));
-                    
+                $send.prop("disabled", true);
+
+                var send = function () {
+                    text = $searchKeyPhrase.val();
+                    $searchKeyPhrase.val("");
+                    // console.log('sent', text);
+                    // console.log('sent as Json ', JSON.stringify({searchKey: text}));
                     var search = {
                         searchKey : ''
                     };
-                    
                     search.searchKey = text;
-                    
+                    connection.send(JSON.stringify(search));
+                };
 
                 connection.onopen = function () {
-                     console.log("connected");
-                     connection.send(JSON.stringify(search));
-                    
+                    $send.prop("disabled", false);
+                    $send.on('click', send);
+                    $searchKeyPhrase.keypress(function (event) {
+                        var keycode = (event.keyCode ? event.keyCode : event.which);
+                        if (keycode == '13') {
+                            send();
+                        }
+                    });
                 };
-                
-                
+
                 connection.onerror = function (error) {
-                    console.log('error');
+                    console.log('WebSocket Error ', error);
                 };
 
                 connection.onmessage = function (event) {
@@ -64,35 +83,41 @@
                             document.getElementById(keyPhraseId).innerHTML = composeProjects(keyWords[keyPhrase]);
                         }
                     }
-                    
-
                     function composeProjects(results) {
-                        toAppend += "<h2 align = center> Search results for: " + keyPhrase + "</h2>";
+                        toAppend += "<h2 align=center> Search results for: " + keyPhrase + "</h2>";
+                        var link3 = "http://localhost:9000/globalstats/" +text ;
+  						toAppend += "<p  align = center style=\"font-size:15px\">  &nbsp <a target='_blank' href=\"" +  link3 + "\"> Global Stats </a> &nbsp ";
+  						var link4 = "http://localhost:9000/globalflesch/" +text ;
+  						toAppend += "  |  &nbsp <a target='_blank' href=\"" +  link4 + "\">  Global Readability </a> &nbsp  </p>";
+  						
                         for (var el in results) {
                             //console.log("getElementById(keyPhraseId) == found the element");
                             
                            toAppend += "<div>";
+                                        
                                         toAppend += "<table>";
                                         toAppend += "<tr>";
-                                            toAppend += "<td style=\"font-size:12px\"> <a target='_blank' href=\"" + userProfileUrl + keyWords[keyPhrase][el].owner_id + "\" >" + keyWords[keyPhrase][el].owner_id + "</a> &nbsp </td>";
+                                            toAppend += "<td style=\"font-size:12px\"> <a target='_blank' href=\"" + userProfileUrl + keyWords[keyPhrase][el].owner_id + "\">" + keyWords[keyPhrase][el].owner_id + "</a> &nbsp </td>";
                                             toAppend += "<td style=\"font-size:12px\">  | " + keyWords[keyPhrase][el].time_submitted + "&nbsp </td>";
                                             toAppend += "<td style=\"font-size:12px\">  | " + keyWords[keyPhrase][el].title + "&nbsp </td>";
                                             toAppend += "<td style=\"font-size:12px\">  |  Type:" + keyWords[keyPhrase][el].type + "&nbsp </td>";
-                                            toAppend += "<td style=\"font-size:12px\">  |   Skills: </td>";
+                                            toAppend += "<td style=\"font-size:12px\">  |  Skills: </td>";
                                             
                                             for(var skill in keyWords[keyPhrase][el].jobs) {
                                             	var skillname = keyWords[keyPhrase][el].jobs[skill].name;
-                                            	toAppend += "<td style=\"font-size:12px\">   <a href=\" http://localhost:9000/skills/" +skillname+ "\">" + skillname + " </a> &nbsp </td>";
+                                            	toAppend += "<td style=\"font-size:12px\">  <a target='_blank' href=\" http://localhost:9000/skills/" +skillname+ "\">" + skillname + " </a> &nbsp </td>";
                                             }
-  											var link = "http://localhost:9000/stats/" +text+ "/" + keyWords[keyPhrase][el].title;
-  											toAppend += "<td style=\"font-size:12px\">  |  <a href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
+                                            
+                                            var link = "http://localhost:9000/stats/" +text+ "/" + keyWords[keyPhrase][el].title;
+  											toAppend += "<td style=\"font-size:12px\">  | <a target='_blank' href=\"" +  link + "\"> Stats </a> &nbsp  </td>";
   											
   											var link2 = "http://localhost:9000/flesch/" +text+ "/" + keyWords[keyPhrase][el].title;
-  											toAppend += "<td style=\"font-size:12px\">  |  <a href=\"" +  link2 + "\"> Readability  &nbsp  </td><br>";
+  											toAppend += "<td style=\"font-size:12px\">  | <a target='_blank' href=\"" +  link2 + "\"> Readability  &nbsp  </td><br>";
   											
                                         toAppend += "</tr>"
                                         toAppend += "</table>";
-                                      
+                             
+                                        
                             toAppend += "</div>";
                                 
                         }
